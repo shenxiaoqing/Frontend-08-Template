@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        #board {
+            width: 320px;
+        }
+
+        #board>div {
+            width: 100px;
+            height: 100px;
+            background-color: #ddf;
+            display: inline-block;
+            vertical-align: middle;
+            border: 1px solid #fff;
+            text-align: center;
+            line-height: 100px;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="board"></div>
+</body>
+<script>
+    let arr = [
+        [1, 2, 0],
+        [0, 0, 0],
+        [0, 0, 0]
+    ]
+    let color = 1;
+    function show() {
+        let board = document.getElementById('board');
+        board.innerHTML = ''
+        for (let i = 0; i < 3; i++) {
+            for (let j = 0; j < 3; j++) {
+                let item = document.createElement('div');
+                item.innerText = arr[i][j] == 1 ? 'O' : arr[i][j] == 2 ? 'X' : '';
+                item.addEventListener('click', () => {
+                    move(i, j);
+                })
+                board.appendChild(item)
+            }
+        }
+    }
+    function move(i, j) {
+        arr[i][j] = color;
+        if (check(arr, color)) {
+            alert(color == 1 ? 'O要赢了' : 'X要赢了')
+        }
+        color = 3 - color;
+        show()
+    }
+    function check(arr, color) {
+        for (let i = 0; i < 3; i++) {
+            let win = true
+            for (let j = 0; j < 3; j++) {
+                if (arr[i][j] != color) {
+                    win = false
+                }
+            }
+            if (win) {
+                return true
+            }
+        }
+        for (let i = 0; i < 3; i++) {
+            let win = true
+            for (let j = 0; j < 3; j++) {
+                if (arr[j][i] != color) {
+                    win = false
+                }
+            }
+            if (win) {
+                return true
+            }
+        }
+        {
+            let win = true
+            for (let i = 0; i < 3; i++) {
+                if(arr[i][i]!=color){
+                    win = false
+                }
+            }
+            if (win) {
+                return true
+            }
+        }
+        {
+            let win = true
+            for (let i = 0; i < 3; i++) {
+                if(arr[i][2-i]!=color){
+                    win = false
+                }
+            }
+            if (win) {
+                return true
+            }
+        }
+    }
+
+    show()
+</script>
+
+</html>
