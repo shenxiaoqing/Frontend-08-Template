@@ -1,0 +1,80 @@
+<style>
+    /* 小格子样式 */
+    .cell {
+        display: inline-block;
+        width: 6px;
+        height: 6px;
+        border-right: 1px solid white;
+        border-bottom: 1px solid white;
+        vertical-align: top;
+        line-height: 7px;
+        background: grey;
+    }
+
+    /* 地图画板样式 */
+    #container {
+        user-select: none;
+        width: 701px;
+    }
+</style>
+<div>
+    <div id="container"></div>
+    <button onclick="localStorage['map'] = JSON.stringify(map) ">save</button>
+    <button onclick="map.fill(0);render()">clear</button>
+</div>
+
+<script>
+    // 默认10000个值为0的格子一维数组
+    // ES6为Array增加了fill()函数，使用制定的元素填充数组，其实就是用默认内容初始化数组。
+    const map = localStorage["map"] ? JSON.parse(localStorage['map']) : Array(10000).fill(0)
+    // 获取地图画板
+    const container = document.getElementById('container')
+    let clear = false, mousedown = false
+    // 渲染地图
+    function render() {
+        // 清空画板
+        container.innerHTML = ''
+        // 遍历数组
+        for (let y = 0; y < 100; y++) {
+            for (let x = 0; x < 100; x++) {
+                // 生成div
+                const cell = document.createElement('div')
+                // 添加样式
+                cell.classList.add('cell')
+                // 值为1背景为黑色，默认灰色
+                if (map[100 * y + x] === 1)
+                    cell.style.backgroundColor = 'black'
+                    // 添加到画板中
+                container.appendChild(cell)
+                // 监听移动事件
+                cell.addEventListener('mousemove', (event) => {
+                    // 只有鼠标被按下去的时候滑动添加效果
+                    if (mousedown) {
+                        console.log(clear)
+                        // 如果右击鼠标为擦除颜色
+                        if (clear) {
+                            event.target.style.backgroundColor = ''
+                            map[100 * y + x] = 0
+                        } else {
+                            // 左击鼠标标记颜色
+                            event.target.style.backgroundColor = 'black'
+                            map[100 * y + x] = 1
+                        }
+
+                    }
+
+                })
+            }
+        }
+    }
+    // 给画板添加鼠标按下事件，按下时全局 mousedown 设为 true ，判断左击还是右击鼠标
+    container.addEventListener('mousedown', (event) => {
+        mousedown = true
+        clear = event.which === 3
+    })
+    // 鼠标抬起 mousedown 设为 false
+    container.addEventListener('mouseup', () => mousedown = false)
+    // 阻止鼠标右击默认行为
+    container.addEventListener('contextmenu', event => event.preventDefault())
+    render()
+</script>

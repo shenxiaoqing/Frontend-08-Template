@@ -37,15 +37,20 @@
 </body>
 
 <script>
+    // 封装一个设置亮灯的函数
     function getColor(color) {
         return function () {
+            // 获取所有灯
             const lights = document.querySelectorAll('.light-item')
+            // 把所有灯熄灭
             for (const light of lights) {
                 light.classList.remove('light')
             }
+            // 把指定颜色的灯点亮
             document.querySelector(`.${color}`).classList.add('light')
         }
     }
+    // 
     const green = getColor('green'),
         yellow = getColor('yellow'),
         red = getColor('red')
@@ -66,6 +71,7 @@
         const next = document.querySelector('.next')
         while (true) {
             green()
+            console.log(window.selfControl)
             if (window.selfControl) {
                 await happen(next, 'click')
             } else {

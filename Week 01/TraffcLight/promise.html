@@ -48,6 +48,7 @@
     const green = getColor('green'),
         yellow = getColor('yellow'),
         red = getColor('red')
+        // 使用promise封装异步函数
     function sleep(t) {
         return new Promise((resolve) => {
             setTimeout(() => {
@@ -58,13 +59,14 @@
 
     function go() {
         green()
+        // 通过prosmise的链式调用执行
         sleep(1000).then(() => {
             yellow()
             return sleep(200)
         }).then(() => {
             red()
             return sleep(500)
-        }).then(go)
+        }).then(go) // 全部执行完毕之后再次执行go函数
     }
 
     go()
