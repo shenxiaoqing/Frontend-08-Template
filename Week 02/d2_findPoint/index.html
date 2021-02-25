@@ -54,20 +54,23 @@
     container.addEventListener('mousedown', (event) => {
         mousedown = true
         clear = event.which === 3
-        console.log(clear, event)
+        // console.log(clear, event)
     })
     container.addEventListener('mouseup', () => mousedown = false)
     container.addEventListener('contextmenu', event => event.preventDefault())
     render()
 
-    
+    // 延时函数，用来观测渲染方式
     async function sleep(t) {
         return new Promise((reslove) => {
             setTimeout(reslove, t);
         })
     }
     async function insert(queue, pattern, x, y, pre) {
+        // console.log('----', 'queue--', queue, 'pattern--', pattern, 'x, y--', x, y, 'pre--', pre)
         if (x < 0 || x >= 100 || y < 0 || y >= 100) {
+            // 找到四面墙了
+            console.log('找到四个🧱了')
             return
         }
         if (pattern[100 * y + x]) {
@@ -80,25 +83,36 @@
     }
     async function path(start, end) {
         let table = Object.create(map)
+        // 标注起点终点样式
         container.children[100 * start[1] + start[0]].style.backgroundColor = 'yellow'
         container.children[100 * end[1] + end[0]].style.backgroundColor = 'red'
         const queue = [start]
+        console.log('queue--', queue, 'start', start)
         map[100 * start[1] + start[0]] = 2
         // map[100 * end[1] + end[0]] = 2
         while (queue.length) {
             let [x, y] = queue.shift()
+            // console.log('x,y', x, y)
             if (x === end[0] && y === end[1]) {
+                console.log('找到了')
+                // 找到了，标记起点到终点的路径
                 let path = []
+                // x,y不等于起点就一直循环
                 while (x !== start[0] || y !== start[1]) {
                     path.push(map[y * 100 + x])
+
                     const perPoint = table[y * 100 + x]
+                    console.log('perPoint', perPoint)
                     x = perPoint[0]
                     y = perPoint[1]
                     await sleep(30)
+                    // 路径标记成紫色
                     container.children[100 * y + x].style.backgroundColor = 'purple'
                 }
                 return path
             }
+            // 从起点开始寻找上下左右四个点
+            // console.log('xxxx, yyyy', x, y)
             await insert(queue, table, x, y - 1, [x, y])
             await insert(queue, table, x + 1, y, [x, y])
             await insert(queue, table, x, y + 1, [x, y])
